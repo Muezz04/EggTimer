@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        .background-dark {
+            background-color: #000000;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .margin-top {
+            margin-top: 100px;
+            cursor: pointer;
+        }
+
+        .timer {
+            font-size: 60px;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .smallpic {
+            width: 150px;
+        }
+
+        .upleft {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+
+        .upright {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .middown {
+            margin-top: 150px;
+            cursor: pointer;
+        }
+
+        
+        .button-small {
+            width: 80px; 
+            height: 80px; 
+        }
+    </style>
+
+    <script>
+        let alarm = new Audio('alarm.mp3');
+        let timerStarted = false;
+        let totalTime = 5 * 60 * 1000;
+        let interval;
+        let timeLeft = totalTime;
+        let paused = false;
+        let endTime;
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLeft / (1000 * 60));
+            let seconds = Math.floor((timeLeft / 1000) % 60);
+            seconds = ('0' + seconds).slice(-2);
+            document.getElementById('timer').innerHTML = '0' + minutes + ' : ' + seconds;
+        }
+
+        function startTimer(duration) {
+            if (!timerStarted) {
+                timerStarted = true;
+                paused = false;
+                let startTime = Date.now();
+                endTime = startTime + (duration || timeLeft);
+
+                interval = setInterval(function () {
+                    let currentTime = Date.now();
+                    timeLeft = endTime - currentTime;
+
+                    if (timeLeft > 0) {
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(interval);
+                        alarm.play();
+                        document.getElementById('timer').innerHTML = '00 : 00';
+                        timerStarted = false;
+                        timeLeft = totalTime;
+                    }
+                }, 1000);
+
+                timerStarted = true;
+            }
+
+        }
+
+        function resetTimer() {
+            clearInterval(interval);
+            timerStarted = false;
+            paused = false;
+            timeLeft = totalTime;
+            updateTimerDisplay();
+        }
+
+        function stopAlarm() {
+            alarm.pause();
+            alarm.currentTime = 0;
+        }
+
+        function stopTimer() {
+            if (timerStarted && !paused) {
+                clearInterval(interval);
+                paused = true;
+                timerStarted = false;
+            } else if (paused) {
+                startTimer(timeLeft);
+            }
+        }
+    </script>
+</head>
+
+<body class="background-dark">
+
+    <div class="upleft">
+        <img onclick="stopAlarm()" src="img/stopalarm.png" class="button-small">
+    </div>
+
+    <div class="upright">
+        <img onclick="stopTimer()" src="img/stoptimer.png" class="button-small">
+    </div>
+
+    <div class="center margin-top">
+        <img src="img/egg.png" class="smallpic">
+    </div>
+
+    <div class="center margin-top timer" id="timer">05 : 00</div>
+
+    <div class="center margin-top timer">
+        <img onclick="startTimer(5 * 60 * 1000)" src="img/soft.png" class="smallpic">
+        <img onclick="startTimer(10 * 60 * 1000)" src="img/mild.png" class="smallpic">
+        <img onclick="startTimer(15 * 60 * 1000)" src="img/hard.png" class="smallpic">
+    </div>
+
+    <div class="center middown">
+        <img onclick="resetTimer()" src="img/reset.png" class="button-small">
+    </div>
+
+    <div class="message" id="message"></div>
+</body>
+
+</html>
