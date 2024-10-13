@@ -16,7 +16,7 @@ Welcome to my **first project**, the **Egg Timer**! This simple web application 
 ## 🖥️ Supported Browsers
 
 - **Google Chrome**
-- **Safari** (You can use this app on Safari with [Life Sefer](https://apps.apple.com/us/app/life-sefer/id1203659627), enabling service worker support to enhance performance)
+- **Safari** 
 
 ## 💻 How to Use
 
